@@ -10,6 +10,7 @@ Route::get('/user', function (Request $request) {
 
 
 //Rutas para el controlador de estudiantes REALES DE BBDD
+
  Route::get('/students', [StudentController::class, 'index']);
 
 Route::post('/students', [StudentController::class, 'store']);
