@@ -9,8 +9,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-//Rutas para el controlador de estudiantes
-Route::get('/students', [StudentController::class, 'index']);
+//Rutas para el controlador de estudiantes REALES DE BBDD
+ Route::get('/students', [StudentController::class, 'index']);
 
 Route::post('/students', [StudentController::class, 'store']);
 
@@ -23,5 +23,21 @@ Route::patch('/students/{id}', [StudentController::class, 'updatePartial']);
 Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
 
+//          --------------PRUEBAS -------------------
+
+// Route::get('/students', function () {
+//     return response('lista de estudiantessss', 200);
+// });
+
+//  Route::post('/students', function () { return 'Creating student'; });
+
+//  Route::put('/students/{id}', function () { return 'Updating student';
+// });
+
+//  Route::delete('/students/{id}', function () { return 'Deleting
+// student'; });
+
+// Route::get('/students/{id}', function () { return 'Getting single
+// student'; });
 
 

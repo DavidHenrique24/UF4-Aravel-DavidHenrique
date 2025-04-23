@@ -3,12 +3,14 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Student;
 
 class StudentController extends Controller
 {
     //Obtiene todos los estudiantes
     public function index()
     {
+
             $students = Student::all();
             return response()->json(['students'=>$students], 200);
     }
@@ -80,7 +82,7 @@ class StudentController extends Controller
         return response()->json(['student' => $student], 200); }
 
     //Elimina
-    
+
     public function destroy($id)
     {
     $student = Student::find($id);
