@@ -1,113 +1,97 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Tarjeta;
 
 class TarjetaController extends Controller
 {
-public function index(){
-  $tarjetas = Tarjeta::all();
-  return response()->json(['tarjetas' => $tarjetas], 200);
+    public function index()
+    {
+        $tarjetas = Tarjeta::all();
+        return response()->json(['tarjetas' => $tarjetas], 200);
+    }
 
- }
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|max:255',
+            'imagen' => 'required|url',
+        ]);
 
- public function store(Request $request){
-$validator = Validator::make($request->all(), [
-'name' => 'required|max:255',
-'email' => 'required|email|unique:students',
-'phone' => 'required|digits:10',
-address=> 'required|in:english,spanish,french'
-]);
-if ($validator->fails()) {
-return response()->json(['errors' =>
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
 
-$validator->errors()], 400);
-}
-$student = Student::create($request->all());
-return response()->json(['student' => $student], 201);
-}
+        $tarjeta = Tarjeta::create($request->all());
+        return response()->json(['tarjeta' => $tarjeta], 201);
+    }
 
+    public function show($id)
+    {
+        $tarjeta = Tarjeta::find($id);
 
-public function show($id)
-{
-$student = Student::find($id);
-if (!$student) {
-return response()->json(['message' => 'Estudiante no
+        if (!$tarjeta) {
+            return response()->json(['message' => 'Tarjeta no encontrada'], 404);
+        }
 
-encontrado'], 404);
-}
-return response()->json(['student' => $student], 200);
-}
+        return response()->json(['tarjeta' => $tarjeta], 200);
+    }
 
+    public function update(Request $request, $id)
+    {
+        $tarjeta = Tarjeta::find($id);
 
-public function update(Request $request, $id)
-{
-$student = Student::find($id);
-if (!$student) {
-return response()->json(['message' => 'Estudiante no
+        if (!$tarjeta) {
+            return response()->json(['message' => 'Tarjeta no encontrada'], 404);
+        }
 
-encontrado'], 404);
-}
-$validator = Validator::make($request->all(), [
-'name' => 'required|max:255',
-'email' => ['required', 'email',
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|max:255',
+            'imagen' => 'required|url',
+        ]);
 
-Rule::unique('students')->ignore($student->id)],
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
 
-'phone' => 'required|digits:10',
-'language' => 'required|in:english,spanish,french'
-]);
-if ($validator->fails()) {
-return response()->json(['errors' =>
+        $tarjeta->update($request->all());
+        return response()->json(['tarjeta' => $tarjeta], 200);
+    }
 
-$validator->errors()], 400);
-}
-$student->update($request->all());
-return response()->json(['student' => $student], 200);
-}
+    public function updatePartial(Request $request, $id)
+    {
+        $tarjeta = Tarjeta::find($id);
 
+        if (!$tarjeta) {
+            return response()->json(['message' => 'Tarjeta no encontrada'], 404);
+        }
 
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'sometimes|max:255',
+            'imagen' => 'sometimes|url',
+        ]);
 
-public function updatePartial(Request $request, $id)
-{
-$student = Student::find($id);
-if (!$student) {
-return response()->json(['message' => 'Estudiante no
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
 
-encontrado'], 404);
-}
-$validator = Validator::make($request->all(), [
-'name' => 'sometimes|max:255',
-'email' => ['sometimes', 'email',
-Rule::unique('students')->ignore($student->id)],
-'phone' => 'sometimes|digits:10',
-'language' => 'sometimes|in:english,spanish,french'
-]);
-if ($validator->fails()) {
-return response()->json(['errors' =>
+        $tarjeta->update($request->all());
+        return response()->json(['tarjeta' => $tarjeta], 200);
+    }
 
-$validator->errors()], 400);
-}
-$student->update($request->all());
-return response()->json(['student' => $student], 200);
-}
+    public function destroy($id)
+    {
+        $tarjeta = Tarjeta::find($id);
 
+        if (!$tarjeta) {
+            return response()->json(['message' => 'Tarjeta no encontrada'], 404);
+        }
 
-
-public function destroy($id)
-{
-$student = Student::find($id);
-if (!$student) {
-return response()->json(['message' => 'Estudiante no
-
-encontrado'], 404);
-}
-$student->delete();
-return response()->json(['message' => 'Estudiante eliminado'],
-200);
-}
-
+        $tarjeta->delete();
+        return response()->json(['message' => 'Tarjeta eliminada'], 200);
+    }
 }
