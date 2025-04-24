@@ -10,7 +10,9 @@ class Tarjeta extends Model
     use HasFactory;
 
     protected $table = 'tarjetas';
-    
+      // Deshabilitar el manejo automático de los timestamps
+      public $timestamps = false;
+      
     protected $fillable = [
         'nombre',
         'imagen',
