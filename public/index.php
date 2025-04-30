@@ -15,9 +15,8 @@ require __DIR__.'/../vendor/autoload.php';
 // Bootstrap Laravel and handle the request...
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-$request = Request::capture();  // Capturamos la solicitud
-$response = $app->handle($request);  // Obtenemos la respuesta de la app
+
 
 $response->send();
 
-$app->terminate($request, $response);  // Terminamos la solicitud
+$app->terminate($request = Request::capture(), $response);
