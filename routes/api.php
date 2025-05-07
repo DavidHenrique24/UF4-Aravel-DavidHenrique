@@ -24,6 +24,36 @@ Route::patch('/students/{id}', [StudentController::class, 'updatePartial']);
 Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
 
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+//protected routes
+
+Route::middleware([isUserAuth::class])->group(function () {
+Route::post('logout', [AuthController::class, 'logout']);
+Route::get('me', [AuthController::class, 'getUser']);
+Route::get('students', [StudentController::class, 'index']);
+});
+
+
+
+Route::middleware([isAdmin::class])->group(function () {
+Route::post('/users', [StudentController::class, 'getUsers']);
+Route::get('/users/{id}', [StudentController::class, 'getUser']);
+Route::put('/users/{id}', [StudentController::class, 'updateUser']);
+Route::delete('/users/{id}', [StudentController::class, 'deleteUser']);
+Route::get('/students', [StudentController::class, 'addStudent']);
+Route::get('/students/{id}', [StudentController::class, 'getStudent']);
+});
+
+
+
+
+
+
+
+
+
 //          --------------PRUEBAS -------------------
 
 // Route::get('/students', function () {
@@ -40,5 +70,3 @@ Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
 // Route::get('/students/{id}', function () { return 'Getting single
 // student'; });
-
-
