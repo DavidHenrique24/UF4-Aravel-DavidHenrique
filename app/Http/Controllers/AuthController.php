@@ -18,7 +18,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|string|max:100|unique:users',
             'password' => 'required|string|min:5|confirmed',
-            'role' => 'required|string|in:user,admin',
+
 
         ]);
 
@@ -29,7 +29,7 @@ class AuthController extends Controller
             'name' => $request->get ('name'),
             'email' => $request->get ('email'),
             'password' => bcrypt($request->get ('password')),
-            'role' => $request->get ('role'),
+         
         ]);
         return response()->json([
             'message' => 'User created successfully',

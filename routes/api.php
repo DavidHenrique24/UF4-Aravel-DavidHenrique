@@ -9,40 +9,18 @@ use App\Http\Middleware\isAdmin;
 use App\Models\User;
 
 // Rutas públicas
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-// Rutas para el controlador de estudiantes (reales de la base de datos)
-Route::get('/students', [StudentController::class, 'index']);
-Route::post('/students', [StudentController::class, 'store']);
-Route::get('/students/{id}', [StudentController::class, 'show']);
-Route::put('/students/{id}', [StudentController::class, 'update']);
-Route::patch('/students/{id}', [StudentController::class, 'updatePartial']);
-Route::delete('/students/{id}', [StudentController::class, 'destroy']);
-
-// Rutas de autenticación
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login']);
+Route::get('students', [StudentController::class, 'index']);
+Route::get('students/{id}', [StudentController::class, 'show']);
 
-// Rutas protegidas por autenticación de usuario
+// Rutas protegidas
 Route::middleware([isUserAuth::class])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('me', [AuthController::class, 'getUser']);
-    Route::get('students', [StudentController::class, 'index']);
+   Route::get('me',[AuthController::class, 'getUser']);
+   Route::post('students', [StudentController::class, 'addStudent']);
+
 });
-
-// Rutas protegidas por autenticación de administrador
-Route::middleware([isAdmin::class])->group(function () {
-    Route::post('/users', [StudentController::class, 'getUsers']);
-    Route::get('/users/{id}', [StudentController::class, 'getUser']);
-    Route::put('/users/{id}', [StudentController::class, 'updateUser']);
-    Route::delete('/users/{id}', [StudentController::class, 'deleteUser']);
-    Route::get('/students', [StudentController::class, 'addStudent']);
-    Route::get('/students/{id}', [StudentController::class, 'getStudent']);
-});
-
-
 
 
 
