@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\TarjetaController;
 use App\Http\Middleware\isUserAuth;
@@ -18,7 +17,7 @@ Route::get('students/{id}', [StudentController::class, 'show']);
 Route::middleware([isUserAuth::class])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
    Route::get('me',[AuthController::class, 'getUser']);
-   Route::post('students', [StudentController::class, 'addStudent']);
+    Route::get('/tarjetas/{id}', [TarjetaController::class, 'getTarjeta']);
 
 });
 Route::get('/tarjetas', [TarjetaController::class, 'index']);
