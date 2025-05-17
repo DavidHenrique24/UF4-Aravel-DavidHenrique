@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
 use App\Models\User;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
+
 
 
 class AuthController extends Controller
@@ -73,14 +73,16 @@ class AuthController extends Controller
 
     public function getUser()
     {
-        $user = Auth::user();
+    //     $user = Auth::user();
+     $user = JWTAuth::parseToken()->authenticate();
         return response()->json([
-            'message' => 'User retrieved successfully',
-            'data' => $user,
-        ], 200);
+          'message' => 'User Conseguido caramba',
+           'data' => $user,
+       ], 200);
+   }
 
 
-    }
+
 
     public function logout()
     {
@@ -88,7 +90,7 @@ class AuthController extends Controller
             JWTAuth::invalidate(JWTAuth::getToken());
 
             return response()->json([
-                'message'=> 'User logiado con exito'
+                'message'=> 'User Logged out sucefuly'
             ], 200);
         }catch (JWTException $e){
             return response()->json ([
