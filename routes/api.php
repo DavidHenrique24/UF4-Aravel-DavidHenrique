@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\TarjetaController;
 use App\Http\Middleware\IsUserAuth;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Controllers\GameController;
+
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -26,6 +28,23 @@ Route::patch('/tarjetas/{id}', [TarjetaController::class, 'updatePartial']);
 Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
 
 
+
+Route::middleware([IsUserAuth::class])->group(function () {
+    Route::get('/games', [GameController::class, 'index']);
+    Route::post('/games', [GameController::class, 'store']);
+    Route::put('/games/{game}/finish', [GameController::class, 'update']);
+    Route::delete('/games/{game}', [GameController::class, 'destroy']);
+    Route::get('/ranking', [GameController::class, 'ranking']);
+});
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::get('/games', [GameController::class, 'index']);
+    Route::post('/games', [GameController::class, 'store']);
+    Route::put('/games/{game}/finish', [GameController::class, 'update']);
+    Route::delete('/games/{game}', [GameController::class, 'destroy']);
+    Route::get('/ranking', [GameController::class, 'ranking']);
+    Route::get('/games/user/{id}', [GameController::class, 'getGamesByUserId']);
+});
 
 
 
