@@ -128,60 +128,94 @@ class TarjetaController extends Controller
 
 
 
-
-    // Listar tarjetas propias del usuario autenticado
-    public function myCards()
-    {
-        $tarjetas = Tarjeta::where('user_id', Auth::id())->get();
-
-        return response()->json([
-            'message' => 'Tus tarjetas',
-            'tarjetas' => $tarjetas
-        ], 200);
+public function getByCategory($categoryId)
+{
+    // Validar que categoryId existe y es numérico (opcional pero recomendable)
+    if (!is_numeric($categoryId)) {
+        return response()->json(['error' => 'ID de categoría inválido'], 400);
     }
 
-    // Listar tarjetas públicas (sin propietario)
-    public function publicCards()
-    {
-        $tarjetas = Tarjeta::whereNull('user_id')->get();
+    $tarjetas = Tarjeta::where('category_id', $categoryId)->get();
 
-        return response()->json([
-            'message' => 'Tarjetas públicas',
-            'tarjetas' => $tarjetas
-        ], 200);
+    return response()->json([
+        'message' => "Tarjetas de la categoría $categoryId",
+        'tarjetas' => $tarjetas
+    ], 200);
+}
+
+// Listar tarjetas propias del usuario autenticado
+public function mytarjetas()
+{
+    $userId = Auth::id();
+
+    if (!$userId) {
+        return response()->json(['error' => 'Usuario no autenticado'], 401);
     }
 
+    $tarjetas = Tarjeta::where('user_id', $userId)->get();
 
+    return response()->json([
+        'message' => 'Tus tarjetas',
+        'tarjetas' => $tarjetas
+    ], 200);
+}
 
+// Listar tarjetas públicas (sin propietario)
+public function publictarjetas()
+{
+    $tarjetas = Tarjeta::whereNull('user_id')->get();
 
-    // Mostrar totes les targetes con admin 
+    return response()->json([
+        'message' => 'Tarjetas públicas',
+        'tarjetas' => $tarjetas
+    ], 200);
+}
+
+// Mostrar todas las tarjetas con relaciones cargadas
 public function all()
 {
-    return Card::with('user', 'category')->get();
+    $tarjetas = Tarjeta::with('user', 'category')->get();
+
+    return response()->json([
+        'message' => 'Todas las tarjetas',
+        'tarjetas' => $tarjetas
+    ], 200);
 }
 
-// Eliminar qualsevol targeta (com admin)
-public function adminDestroy(Card $card)
+// Eliminar cualquier tarjeta (como admin)
+public function adminDestroy(Tarjeta $tarjeta)
 {
-    $card->delete();
-    return response()->json(['message' => 'Targeta eliminada per admin']);
+    $user = Auth::user();
+    if (!$user || $user->role !== 'admin') {
+        return response()->json(['error' => 'No autorizado'], 403);
+    }
+
+    $tarjeta->delete();
+
+    return response()->json(['message' => 'Tarjeta eliminada por admin'], 200);
 }
 
-// Opcional: editar targeta com admin
-public function adminUpdate(Request $request, Card $card)
+// Editar tarjeta como admin
+public function adminUpdate(Request $request, Tarjeta $tarjeta)
 {
-    $request->validate([
-        'nombre' => 'sometimes|string|max:100',
-        'url_imagen' => 'sometimes|url',
+    $user = Auth::user();
+    if (!$user || $user->role !== 'admin') {
+        return response()->json(['error' => 'No autorizado'], 403);
+    }
+
+    $validated = $request->validate([
+        'nombre' => 'sometimes|string|max:255',
+        'imagen' => 'sometimes|url', // corregí el nombre a 'imagen' para que coincida con el campo en DB
         'category_id' => 'nullable|exists:categories,id',
     ]);
 
-    $card->update($request->all());
+    $tarjeta->update($validated);
 
     return response()->json([
-        'message' => 'Targeta actualitzada per admin',
-        'data' => $card
-    ]);
+        'message' => 'Tarjeta actualizada por admin',
+        'tarjeta' => $tarjeta
+    ], 200);
 }
+
 
 }

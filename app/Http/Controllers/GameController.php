@@ -5,26 +5,36 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Game;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Tarjeta;
 
 
 class GameController extends Controller
 {
 public function index()
 {
-    $userId = Auth::id(); // també pots fer auth()->user()->id
-    $games = Game::where('user_id', $userId)->get();
+    $user = auth('api')->user(); // obtiene el usuario autenticado con guard 'api'
+    if (!$user) {
+        return response()->json(['error' => 'Usuario no autenticado'], 401);
+    }
+
+    $games = Game::where('user_id', $user->id)->get();
 
     return response()->json([
         'message' => 'Llistat de partides',
         'data' => $games
     ], 200);
-
-
 }
+
 public function store()
 {
+    $user = auth('api')->user(); // usa el guard 'api' explícitamente
+    if (!$user) {
+        return response()->json(['error' => 'Usuario no autenticado'], 401);
+    }
+    //Agrege lo de arriba para que comprobara que eror me daba y sirviera
+
     $game = Game::create([
-        'user_id' => Auth::id(),
+        'user_id' => $user->id,  // usa el id del usuario autenticado
         'clicks' => 0,
         'points' => 0,
         'duration' => null
@@ -35,6 +45,7 @@ public function store()
         'data' => $game
     ], 201);
 }
+
 
 public function update(Request $request, Game $game)
 {
