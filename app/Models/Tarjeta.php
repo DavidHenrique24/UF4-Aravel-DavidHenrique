@@ -17,10 +17,13 @@ class Tarjeta extends Model
         'imagen',
     ];
 
- public function user()
+public function user()
 {
     return $this->belongsTo(User::class);
 }
+
+
+
 
 
 }
