@@ -26,7 +26,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 });
 
-
+// Rutas protegidas para administradores
 Route::middleware([IsUserAdmin::class])->group(function () {
 Route::get('/users', [AuthController::class, 'all']);
 Route::get('/users/{id}', [AuthController::class, 'getUserById']);
