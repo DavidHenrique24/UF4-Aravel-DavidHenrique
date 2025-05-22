@@ -17,6 +17,7 @@ class PetController extends Controller
     }
 
 
+    //Modifico para que se pueda usar store
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -32,6 +33,8 @@ class PetController extends Controller
         $pets = Pet::create($request->all());
         return response()->json(['MAscotas' => $pets], 201);
     }
+
+
 
 
      public function show($id)
@@ -94,15 +97,35 @@ class PetController extends Controller
 
 public function destroy($id)
     {
-        $pets = Pet::find($id);
+        $user = Auth::user();
 
-        if (!$pets) {
-            return response()->json(['message' => 'Mascota no encontrada'], 404);
-        }
+       if ($pets->user_id !== $user->id && $user->role !== 'admin') {
+        return response()->json(['error' => 'No autorizado'], 403);
+    }
+
 
         $pets->delete();
         return response()->json(['message' => 'Mascota eliminada'], 200);
     }
+
+
+public function myPets()
+{
+    $pets = Pet::where('user_id', Auth::id())->get();
+
+    return response()->json([
+        'message' => 'Mis Mascotas',
+        'data' => $pets
+    ]);
+}
+
+public function all()
+{
+    return Pet::with('user')->get();
+}
+
+
+
 
 
 

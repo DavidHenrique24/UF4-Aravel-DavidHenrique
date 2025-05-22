@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\IsAuthenticated;
-use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsUserAdmin;
+
 
 //Rutas publicas
 Route::post('/register', [AuthController::class, 'register']);
@@ -16,6 +17,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware([IsAuthenticated::class])->group(function () {
 Route::get('/pets', [PetController::class, 'index']);
 Route::post('/pets', [PetController::class, 'store']);
+Route::get('/my-pets', [PetController::class, 'myPets']);
 Route::get('/pets/{id}', [PetController::class, 'show']);
 Route::put('/pets/{id}', [PetController::class, 'update']);
 Route::patch('/pets/{id}', [PetController::class, 'updatePartial']);
@@ -24,3 +26,16 @@ Route::post('/logout', [AuthController::class, 'logout']); Route::post('/logout'
 
 });
 
+
+Route::middleware([IsUserAdmin::class])->group(function () {
+Route::get('/users', [AuthController::class, 'all']);
+Route::get('/users/{id}', [AuthController::class, 'getUserById']);
+Route::put('/users/{id}', [AuthController::class, 'updateUser']);
+Route::delete('/users/{id}', [AuthController::class, 'adminDestroy']);
+
+
+
+
+
+
+});

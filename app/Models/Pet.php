@@ -14,4 +14,10 @@ protected $table = 'pets';
 protected $fillable = ['name', 'image', 'description'];
 
 
+    //Relacion con User 
+ public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

@@ -68,19 +68,6 @@ class AuthController extends Controller
         }
     }
 
-    public function getUser()
-    {
-    //     $user = Auth::user();
-     $user = JWTAuth::parseToken()->authenticate();
-        return response()->json([
-          'message' => 'User Conseguido caramba',
-           'data' => $user,
-       ], 200);
-   }
-
-
-
-
     public function logout()
     {
         try{
@@ -95,6 +82,20 @@ class AuthController extends Controller
             ],500);
         }
     }
+
+
+    public function getUser()
+    {
+    //     $user = Auth::user();
+     $user = JWTAuth::parseToken()->authenticate();
+        return response()->json([
+          'message' => 'User Conseguido caramba',
+           'data' => $user,
+       ], 200);
+   }
+
+
+
 
 
 

@@ -19,7 +19,7 @@ class IsUserAdmin
         return $next($request); //puede pasar caballero
        } else {
         return response()->json([
-            'message' => 'Token Invalida, dele pa afuera'
+            'message' => 'Token Invalida y no eres admin, dele pa afuera'
         ], 401);
 
        }
