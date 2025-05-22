@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Pet;
 use Illuminate\Support\Facades\Validator;
 
-
 class PetController extends Controller
 
 {
