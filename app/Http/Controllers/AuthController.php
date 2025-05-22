@@ -84,15 +84,79 @@ class AuthController extends Controller
     }
 
 
-    public function getUser()
+//Crud de Users
+public function getUser()
+{
+    $user = JWTAuth::parseToken()->authenticate();
+
+    return response()->json([
+        'message' => 'User conseguido caramba',
+        'data' => $user,
+    ], 200);
+}
+
+    public function all()
     {
-    //     $user = Auth::user();
-     $user = JWTAuth::parseToken()->authenticate();
+        $users = User::all();
+
         return response()->json([
-          'message' => 'User Conseguido caramba',
-           'data' => $user,
-       ], 200);
-   }
+            'message' => 'Todos los usuarios',
+            'data' => $users,
+        ], 200);
+    }
+
+    public function getUserById($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Usuario no encontrado',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Usuario encontrado',
+            'data' => $user,
+        ], 200);
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Usuario no encontrado',
+            ], 404);
+        }
+
+        $user->update($request->only(['name', 'email', 'role']));
+
+        return response()->json([
+            'message' => 'Usuario actualizado',
+            'data' => $user,
+        ], 200);
+    }
+
+    public function adminDestroy($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Usuario no encontrado',
+            ], 404);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Usuario eliminado correctamente',
+        ], 200);
+    }
+
+
 
 
 

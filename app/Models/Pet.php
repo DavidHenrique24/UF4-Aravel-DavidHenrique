@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Pet extends Model
 {
@@ -14,7 +15,7 @@ protected $table = 'pets';
 protected $fillable = ['name', 'image', 'description'];
 
 
-    //Relacion con User 
+    //Relacion con User
  public function user()
     {
         return $this->belongsTo(User::class);

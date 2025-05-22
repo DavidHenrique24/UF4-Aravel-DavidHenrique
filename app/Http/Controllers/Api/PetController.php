@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pet;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class PetController extends Controller
 
@@ -17,25 +19,31 @@ class PetController extends Controller
     }
 
 
-    //Modifico para que se pueda usar store
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
-            'image' => 'required|url',
-            'description' => 'required|max:255',
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
+   public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|max:255',
+        'image' => 'required|url',
+        'description' => 'required|max:255',
+    ]);
 
-        $pets = Pet::create($request->all());
-        return response()->json(['MAscotas' => $pets], 201);
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 400);
     }
 
+    $pets = Pet::create([
+        'name' => $request->name,
+        'image' => $request->image,
+        'description' => $request->description,
+        'user_id' => Auth::id(),
+    ]);
 
-
+    return response()->json([
+        'message' => 'Mascota creada',
+        'data' => $pets
+    ], 201);
+}
 
      public function show($id)
     {
@@ -98,11 +106,11 @@ class PetController extends Controller
 public function destroy($id)
     {
         $user = Auth::user();
+        $pets = Pet::find($id);
 
-       if ($pets->user_id !== $user->id && $user->role !== 'admin') {
-        return response()->json(['error' => 'No autorizado'], 403);
-    }
-
+        if (!$pets) {
+            return response()->json(['message' => 'Mascota no encontrada'], 404);
+        }
 
         $pets->delete();
         return response()->json(['message' => 'Mascota eliminada'], 200);
@@ -118,12 +126,6 @@ public function myPets()
         'data' => $pets
     ]);
 }
-
-public function all()
-{
-    return Pet::with('user')->get();
-}
-
 
 
 

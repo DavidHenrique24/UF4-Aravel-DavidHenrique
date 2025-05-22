@@ -22,7 +22,7 @@ Route::get('/pets/{id}', [PetController::class, 'show']);
 Route::put('/pets/{id}', [PetController::class, 'update']);
 Route::patch('/pets/{id}', [PetController::class, 'updatePartial']);
 Route::delete('/pets/{id}', [PetController::class, 'destroy']);
-Route::post('/logout', [AuthController::class, 'logout']); Route::post('/logout', [AuthController::class, 'logout']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 });
 
