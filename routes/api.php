@@ -1,6 +1,4 @@
 <?php
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\TarjetaController;
@@ -9,39 +7,50 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\CategoryController;
 
+
 // Rutas públicas
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/tarjetas/{id}', [TarjetaController::class, 'show']);
 
-// Rutas públicas para tarjetas (sin autenticación)
-Route::get('/tarjetas', [TarjetaController::class, 'index']);         // Listar todas tarjetas
-Route::get('/tarjetas/{id}', [TarjetaController::class, 'show']);     // Mostrar tarjeta por id
-
-// Rutas protegidas (requieren autenticación)
+// Rutas protegidas
 Route::middleware([IsUserAuth::class])->group(function () {
-
-    // Usuario logueado
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'getUser']);
 
-    // Rutas de tarjetas privadas (propias)
-    Route::post('/tarjetas', [TarjetaController::class, 'store']);            // Crear tarjeta (usuario actual)
-    Route::put('/tarjetas/{id}', [TarjetaController::class, 'update']);       // Actualizar tarjeta (solo propietario o admin)
-    Route::patch('/tarjetas/{id}', [TarjetaController::class, 'updatePartial']);
-    Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
+    // Tarjetas privadas
+    Route::post('/tarjetas', [TarjetaController::class, 'store']);
 
-    //Categorias
-   Route::get('/categories', [CategoryController::class, 'index']);
+
+    // Categorías
+    Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 
-
-    // Rutas del juego protegidas
-    Route::get('/games', [GameController::class, 'index']);
+    // Juegos
     Route::post('/games', [GameController::class, 'store']);
-    Route::put('/games/{game}/finish', [GameController::class, 'update']);
-    Route::delete('/games/{game}', [GameController::class, 'destroy']);
+    Route::put('/games/{game}/finish', [GameController::class, 'finish']);
     Route::get('/ranking', [GameController::class, 'ranking']);
-    Route::get('/games/user/{id}', [GameController::class, 'getGamesByUserId']);
+
+    // Rutas admin protegidas - solo accesibles a usuarios con rol admin
+    Route::middleware([IsAdmin::class])->group(function () {
+        // Gestión usuarios
+        Route::get('/users', [AuthController::class, 'all']);
+        Route::get('/users/{id}', [AuthController::class, 'getUserById']);
+        Route::put('/users/{id}', [AuthController::class, 'updateUser']);
+        Route::delete('/users/{id}', [AuthController::class, 'adminDestroy']);
+        //partidas
+         Route::get('/games', [GameController::class, 'index']);
+        Route::delete('/games/{game}', [GameController::class, 'destroy']);
+        Route::get('/users/{id}/games', [GameController::class, 'getGamesByUserId']);
+
+        //Tarjetas
+    Route::get('/tarjetas', [TarjetaController::class, 'index']);
+    Route::put('/tarjetas/{id}', [TarjetaController::class, 'update']);
+    Route::patch('/tarjetas/{id}', [TarjetaController::class, 'updatePartial']);
+    Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
+
+
+    });
 });

@@ -46,11 +46,15 @@ public function store()
     ], 201);
 }
 
-
-public function update(Request $request, Game $game)
+//Es metodo update pero cambaido de nombre
+public function finish(Request $request, Game $game)
 {
-    // Verifiquem si l'usuari és el propietari
-    if ($game->user_id !== Auth::id()) {
+    $user = auth('api')->user(); // O Auth::user() si usas otro guard
+    if (!$user) {
+        return response()->json(['error' => 'Usuari no autenticat'], 401);
+    }
+
+    if ($game->user_id !== $user->id) {
         return response()->json(['error' => 'No autoritzat'], 403);
     }
 
@@ -68,12 +72,17 @@ public function update(Request $request, Game $game)
     ], 200);
 }
 
+
 public function destroy(Game $game)
 {
-    $user = Auth::user();
+    $user = auth('api')->user(); // Obtener el usuario autenticado usando el guard 'api'
+    if (!$user) {
+        return response()->json(['error' => 'Usuario no autenticado'], 401);
+    }
 
+    // Comprobar si el usuario es propietario o admin
     if ($user->id !== $game->user_id && $user->role !== 'admin') {
-        return response()->json(['error' => 'No autoritzat'], 403);
+        return response()->json(['error' => 'No autorizado'], 403);
     }
 
     $game->delete();
@@ -102,11 +111,6 @@ public function ranking()
 
 public function getGamesByUserId($id)
 {
-    $user = Auth::user();
-    if ($user->role !== 'admin') {
-        return response()->json(['error' => 'Només per admins'], 403);
-    }
-
     $games = Game::where('user_id', $id)->get();
 
     return response()->json([
@@ -114,6 +118,7 @@ public function getGamesByUserId($id)
         'data' => $games
     ]);
 }
+
 
 
 }
