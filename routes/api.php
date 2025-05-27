@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/tarjetas/{id}', [TarjetaController::class, 'show']);
+Route::get('/tarjetas', [TarjetaController::class, 'index']);
 
 // Rutas protegidas
 Route::middleware([IsUserAuth::class])->group(function () {
@@ -46,7 +47,7 @@ Route::middleware([IsUserAuth::class])->group(function () {
         Route::get('/users/{id}/games', [GameController::class, 'getGamesByUserId']);
 
         //Tarjetas
-    Route::get('/tarjetas', [TarjetaController::class, 'index']);
+
     Route::put('/tarjetas/{id}', [TarjetaController::class, 'update']);
     Route::patch('/tarjetas/{id}', [TarjetaController::class, 'updatePartial']);
     Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
