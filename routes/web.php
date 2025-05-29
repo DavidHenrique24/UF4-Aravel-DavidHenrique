@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BookController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,3 +25,6 @@ Route::post('/suma', function (Request $request) {
 
     return view('suma', ['resultado' => $resultado]);
 });
+
+Route::resource('books', BookController::class);
+
