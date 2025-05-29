@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\PeliculaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,3 +25,5 @@ Route::post('/suma', function (Request $request) {
 
     return view('suma', ['resultado' => $resultado]);
 });
+
+Route::resource('peliculas', PeliculaController::class);

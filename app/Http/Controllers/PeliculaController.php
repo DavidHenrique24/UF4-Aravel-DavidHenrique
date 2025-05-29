@@ -12,7 +12,8 @@ class PeliculaController extends Controller
      */
     public function index()
     {
-        //
+        $peliculas = Pelicula::all();
+        return view('peliculas.index', compact('peliculas'));
     }
 
     /**
@@ -20,7 +21,7 @@ class PeliculaController extends Controller
      */
     public function create()
     {
-        //
+        return view('peliculas.create');
     }
 
     /**
@@ -28,7 +29,16 @@ class PeliculaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+                'portada' => 'nullable|string|max:800',
+            'descripcion' => 'nullable|string',
+            'year' => 'required|integer|min:1900|max:' . date('Y'),
+        ]);
+
+        Pelicula::create($request->all());
+        return redirect()->route('peliculas.index')->with('success',
+        'Pelicula creada exitosamente.');
     }
 
     /**
@@ -36,7 +46,7 @@ class PeliculaController extends Controller
      */
     public function show(Pelicula $pelicula)
     {
-        //
+        return view('peliculas.show', compact('pelicula'));
     }
 
     /**
@@ -44,7 +54,7 @@ class PeliculaController extends Controller
      */
     public function edit(Pelicula $pelicula)
     {
-        //
+        return view('peliculas.edit', compact('pelicula'));
     }
 
     /**
@@ -52,7 +62,16 @@ class PeliculaController extends Controller
      */
     public function update(Request $request, Pelicula $pelicula)
     {
-        //
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'portada' => 'nullable|string|max:800',
+            'descripcion' => 'nullable|string',
+            'year' => 'required|integer|min:1900|max:' . date('Y'),
+        ]);
+
+        $pelicula->update($request->all());
+        return redirect()->route('peliculas.index')->with('success',
+        'Pelicula actualizada exitosamente');
     }
 
     /**
@@ -60,6 +79,8 @@ class PeliculaController extends Controller
      */
     public function destroy(Pelicula $pelicula)
     {
-        //
+        $pelicula->delete();
+        return redirect()->route('peliculas.index')->with('success',
+        'Pelicula eliminada exitosamente');
     }
 }
