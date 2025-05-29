@@ -31,6 +31,7 @@ Route::middleware([IsUserAuth::class])->group(function () {
 
     // Juegos
     Route::post('/games', [GameController::class, 'store']);
+        Route::get('/games', [GameController::class, 'index']);
     Route::put('/games/{game}/finish', [GameController::class, 'finish']);
     Route::get('/ranking', [GameController::class, 'ranking']);
 
@@ -42,7 +43,7 @@ Route::middleware([IsUserAuth::class])->group(function () {
         Route::put('/users/{id}', [AuthController::class, 'updateUser']);
         Route::delete('/users/{id}', [AuthController::class, 'adminDestroy']);
         //partidas
-         Route::get('/games', [GameController::class, 'index']);
+
         Route::delete('/games/{game}', [GameController::class, 'destroy']);
         Route::get('/users/{id}/games', [GameController::class, 'getGamesByUserId']);
 
