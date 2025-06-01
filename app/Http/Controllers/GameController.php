@@ -17,10 +17,11 @@ public function index()
         return response()->json(['error' => 'Usuario no autenticado'], 401);
     }
 
+    // Obtiene solo las partidas del usuario autenticado
     $games = Game::where('user_id', $user->id)->get();
 
     return response()->json([
-        'message' => 'Llistat de partides',
+        'message' => 'Listado de partidas del usuario autenticado',
         'data' => $games
     ], 200);
 }
@@ -117,6 +118,16 @@ public function getGamesByUserId($id)
         'message' => "Partides de l’usuari $id",
         'data' => $games
     ]);
+}
+
+public function allGames()
+{
+    $games = Game::with('user')->get(); // Incluye la relación con el usuario si existe
+
+    return response()->json([
+        'message' => 'Todas las partidas de todos los usuarios',
+        'data' => $games
+    ], 200);
 }
 
 

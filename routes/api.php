@@ -29,6 +29,8 @@ Route::middleware([IsUserAuth::class])->group(function () {
     Route::put('/categories/{category}', [CategoryController::class, 'update']);
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 
+Route::get('/games/all', [GameController::class, 'allGames']);
+
     // Juegos
     Route::post('/games', [GameController::class, 'store']);
         Route::get('/games', [GameController::class, 'index']);
